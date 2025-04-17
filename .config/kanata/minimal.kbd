@@ -1,0 +1,117 @@
+#|act as backtick/grave on quick tap, but change ijkl keys to arrow keys on hold.
+
+This text between the two pipe+octothorpe sequences is a multi-line comment.
+|#
+
+;; Text after double-semicolons are single-line comments.
+
+#|
+One defcfg entry may be added, which is used for configuration key-pairs. These
+configurations change kanata's behaviour at a more global level than the other
+configuration entries.
+|#
+
+(defcfg
+  #|
+  This configuration will process all keys pressed inside of kanata, even if
+  they are not mapped in defsrc. This is so that certain actions can activate
+  at the right time for certain input sequences. By default, unmapped keys are
+  not processed through kanata due to a Windows issue related to AltGr. If you
+  use AltGr in your keyboard, you will likely want to follow the simple.kbd
+  file while unmapping lctl and ralt from defsrc.
+  |#
+  process-unmapped-keys no
+)
+
+(defsrc
+  esc  f1    f2    f3    f4    f5    f6    f7    f8    f9    f10    f11    f12
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  fn lctl lalt lmet           spc            ralt rmet
+)
+
+(deflayer base
+  esc  f1    f2    f3    f4    f5    f6    f7    f8    f9    f10    f11    f12
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @mouse a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  @fn lctl lalt lmet           @cap            ralt @mouse
+)
+
+;; (deflayer none
+;;   _  _    _    _    _    _    _    _    _    _    _    _    _
+;;   _  _    _    _    _    _    _    _    _    _    _    _    _    _
+;;   _  _    _    _    _    _    _    _    _    _    _    _    _    _
+;;   _ _    _    _    _    _    _    _    _    _    _    _    _
+;;   _ _    _    _    _    _    _    _    _    _    _    _
+;;   _ _ _ _           _            _ _ _
+;; )
+
+(deflayermap caps
+  q M-lft
+  tab M-rght
+  c A-M-lft
+  v A-M-rght
+  z esc
+  u home
+  i pgdn
+  o pgup
+  p end
+  s lctl
+  d lalt
+  f lmet
+  j lft
+  k down
+  l up
+  ; right
+  b ret
+  n bks
+  m del
+  rmet shft
+)
+
+(deflayermap fn
+  q lrld
+  f1 brdn
+  f2 bru
+  f10 mute
+  f11 vold
+  f12 volu
+)
+
+(deflayermap mouse
+  j @ms←
+  k @ms↓
+  l @ms↑
+  ; @ms→
+  g @mwu
+  t @mwd
+  q @fms
+  x mrgt
+  lmet mmid
+  spc mlft
+)
+
+(defalias
+  ms↑ (movemouse-up 1 3)
+  ms← (movemouse-left 1 3)
+  ms↓ (movemouse-down 1 3)
+  ms→ (movemouse-right 1 3)
+  mwu (mwheel-up 50 3)
+  mwd (mwheel-down 50 3)
+  fms (movemouse-speed 1)
+
+  ;; Horizontal mouse wheel actions. Similar story to vertical mouse wheel.
+  mwl (mwheel-left 50 120)
+  mwr (mwheel-right 50 120)
+)
+ 
+(defalias
+  fn (layer-toggle fn)
+  mouse (layer-toggle mouse)
+  cap (tap-hold-press 200 200 spc (layer-toggle caps))
+;;  grv (tap-hold-press 200 200 grv (layer-toggle arrows))
+)
