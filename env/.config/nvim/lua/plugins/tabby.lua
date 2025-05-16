@@ -31,7 +31,7 @@ return {
           local win_ids = require('tabby.module.api').get_tab_wins(tab.id)
           for _, win_id in ipairs(win_ids) do
               if pcall(vim.api.nvim_win_get_buf, win_id) then
-                  local bufid = vim.api.nvim_win_get_buf(win_id)
+                 local bufid = vim.api.nvim_win_get_buf(win_id)
                   if vim.api.nvim_buf_get_option(bufid, "modified") then
                       modified = true
                       break

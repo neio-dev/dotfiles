@@ -1,0 +1,5 @@
+- [] add fleet type (set/append)
+- [] save sessions
+- [x] connect bay to dock
+- [] prevent add to same list 
+- [x] fix nvim present in bay

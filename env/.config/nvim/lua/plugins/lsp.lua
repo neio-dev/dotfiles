@@ -10,6 +10,8 @@ local function enable_lsps(lspconfig)
         }
     })
 
+    lspconfig.mdx_analyzer.setup({})
+
     -- Python LSP
     lspconfig.pyright.setup({})
 
@@ -17,7 +19,9 @@ local function enable_lsps(lspconfig)
     lspconfig.html.setup({})
 
     -- TS LSP
-    lspconfig.ts_ls.setup({})
+    lspconfig.ts_ls.setup({
+        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+    })
 
     -- GLSL LSP
     lspconfig.glsl_analyzer.setup {}
@@ -53,7 +57,8 @@ return { {
                 local opts = { buffer = event.buf }
 
                 vim.keymap.set('n', '<leader>L', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-                vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+                vim.keymap.set('n', '<leader>ld', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+                vim.keymap.set('n', '<leader>lx', '<cmd>lua vim.diagnostic.open_float()<cr>', opts)
                 vim.keymap.set('n', '<leader>lD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
                 vim.keymap.set('n', '<leader>li', '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
                 vim.keymap.set('n', '<leader>lo', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
