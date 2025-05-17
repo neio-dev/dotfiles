@@ -1,16 +1,15 @@
 local Fleet = require("harbor.fleet")
 local Ship = require("harbor.ship")
 local Bay = require("harbor.bay")
-local Harbor = require("harbor.harbor")
 
 ---@class Dock: Fleet
 ---@field bay Bay
----@field harbor Harbor
+---@field harbor any
 local Dock = setmetatable({}, { __index = Fleet })
 Dock.__index = Dock
 
 ---comment
----@param harbor Harbor
+---@param harbor any
 ---@return Dock
 function Dock:new(harbor)
     ---@class Dock

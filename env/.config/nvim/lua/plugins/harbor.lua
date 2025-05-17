@@ -21,9 +21,10 @@ return {
         end
         print("Bay", "[", to_print_2, "]")
         harbor:setup()
-        harbor.dock:set(Ship:new("/home/dev/.config/nvim/lua/harbor/init.lua"))
-        harbor.dock:set(Ship:new("/home/dev/.config/nvim/lua/harbor/fleet.lua"))
+        harbor.dock:set(Ship:new("/home/dev/.config/nvim/lua/harbor/harbor.lua"))
         harbor.dock:set(Ship:new("/home/dev/.config/nvim/lua/harbor/commands.lua"))
+        harbor.dock:set(Ship:new("/home/dev/.config/nvim/lua/harbor/sessions.lua"))
+        harbor.dock:set(Ship:new("/home/dev/.config/nvim/lua/harbor/types.lua"))
         harbor:set_default_keybinds()
         print("formatted name", harbor.dock:get()[1]:format_name())
         -- vim.keymap.set("n", "<leader>hh", function() harpoon:list("__harpoon_temp"):show(1) end)

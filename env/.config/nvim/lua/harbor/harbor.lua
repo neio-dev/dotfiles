@@ -3,13 +3,11 @@ local Bay = require("harbor.bay")
 local Commands = require("harbor.commands")
 local Extensions = require("harbor.extensions")
 local Ship = require("harbor.ship")
-
+local SessionManager = require("harbor.sessions")
 local buffer = require("harbor.buffer")
+require("harbor.types")
 
 ---@class Harbor
----@field dock Dock
----@field bay Bay
----@field extensions {[string]: Extension}
 local Harbor = {}
 Harbor.__index = Harbor
 function Harbor:new()
@@ -20,6 +18,7 @@ function Harbor:new()
     }, self)
 
     instance.dock = Dock:new(instance)
+    instance.sessions = SessionManager:new(instance)
     return instance
 end
 

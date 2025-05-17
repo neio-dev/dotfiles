@@ -5,7 +5,7 @@ local Bay = setmetatable({}, { __index=Fleet })
 Bay.__index = Bay
 
 function Bay:new()
-    local instance = Fleet.new(self, "Bay", 1, RESOLVE.prepend)
+    local instance = Fleet.new(self, "Bay", 3, RESOLVE.prepend)
     return instance
 end
 
