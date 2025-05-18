@@ -60,7 +60,6 @@ function SessionManager:save()
     local json = vim.fn.json_encode
     local filepath = self.dir .. "/" .. fnv1a(self.path) .. ".json"
     local data = { dock = self.harbor.dock:get(), bay = self.harbor.bay:get() }
-    print("DEBUG SAVE TRIGGER")
     vim.fn.writefile({ json(data) }, filepath)
 end
 
