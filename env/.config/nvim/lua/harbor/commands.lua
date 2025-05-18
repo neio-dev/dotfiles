@@ -1,7 +1,7 @@
 local Commands = {}
-local harbor
 
-local commands = {
+---@param harbor Harbor
+local get_commands = function(harbor) return {
     {
         "HrbDock",
         function()
@@ -15,6 +15,20 @@ local commands = {
         { desc = "Get dock list" }
     },
     {
+        "HrbLoad",
+        function()
+            harbor.sessions:load()
+        end,
+        { desc = "Load harbor sessions" }
+    },
+    {
+        "HrbSave",
+        function()
+            harbor.sessions:save()
+        end,
+        { desc = "Save harbor sessions" }
+    },
+  {
         "HrbAdd",
         function()
             harbor.dock:set()
@@ -46,7 +60,7 @@ local commands = {
         end,
         { desc = "Show docked ship", nargs = 1 }
     },
-}
+} end
 
 local function create_command(command)
     local name, callback, opts = unpack(command)
@@ -54,9 +68,8 @@ local function create_command(command)
 end
 
 
-function Commands:init()
-    harbor = require("harbor")
-    for index, value in ipairs(commands) do
+function Commands:init(harbor)
+    for index, value in ipairs(get_commands(harbor)) do
         create_command(value)
     end
 end

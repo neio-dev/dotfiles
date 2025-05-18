@@ -37,8 +37,8 @@ end
 function harbor_lualine:setup()
     local ext = function()
         local harbor = require("harbor")
-        local bay_fleet = get_fleet(" Bay", harbor.bay:get())
-        local dock_fleet = get_fleet(" Dock: ", harbor.dock:get(), { show_index = true })
+        local bay_fleet = get_fleet(": ", harbor.bay:get())
+        local dock_fleet = get_fleet(": ", harbor.dock:get(), { show_index = true })
         return bay_fleet .. " ||| " .. dock_fleet
     end
 

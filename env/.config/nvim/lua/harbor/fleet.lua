@@ -1,6 +1,6 @@
 local Ship = require("harbor.ship")
 local buffer = require("harbor.buffer")
-
+local icons = require("harbor.icons")
 -- Used in place of nil to keep table functions usable
 -- e.g. nil will stop a for loop at nil index
 EMPTY = {}
@@ -12,23 +12,21 @@ RESOLVE = {
 }
 
 ---@class Fleet
----@field name string
----@field ships {[string]: Ship}
----@field resolve? RESOLVE.replace|RESOLVE.prepend
 local Fleet = {
 }
 
 Fleet.__index = Fleet
 
+---@param harbor Harbor
 ---@param name string
 ---@param length number
-function Fleet.new(self, name, length, resolve)
+function Fleet.new(self, harbor, name, length, resolve)
     local instance = setmetatable({
         name = name,
         ships = {},
         resolve = resolve or RESOLVE.replace,
     }, self)
-
+    instance.harbor = harbor
     for i = 1, length do
         instance.ships[i] = EMPTY
     end
@@ -49,52 +47,76 @@ end
 ---input the user for ship index
 ---@private
 ---@param length number
----@return number
+---@return number?
 function Fleet:input_index(length)
+    print(icons.ask .. " Choose index between 1 and " .. length .. ": ")
     while true do
-        local input = vim.fn.input("Choose index between 1 and " .. length)
+        local input
+        if #self.ships < 10 then
+            input = vim.fn.getchar()
+            local input_char = vim.fn.nr2char(input)
+            if input == 27 or input_char == "q" then
+                return nil
+            end
+            input = input_char
+        else
+            input = vim.fn.input("")
+        end
+
         local index = tonumber(input)
         if index and index >= 1 and index <= length and index == math.floor(index) then
             return index
         else
-            print("Invalid input. Please enter an integer between 1 and " .. length)
+            print(icons.error .. " Invalid input. Please enter an integer between 1 and " .. length)
         end
     end
 end
 
 ---@param ship? Ship
 ---@param index? number
----@return Ship
+---@return Ship?
 function Fleet:set(ship, index)
     local idx = index or self:get_next_empty_idx()
     if ship == nil then
         local curr_buf = buffer:get_current()
 
-        ship = Ship:new(curr_buf.name)
+        ship = Ship:new(curr_buf.name, curr_buf.cursor)
     end
 
 
     if (idx == nil) then
         if self.resolve == RESOLVE.replace then
             idx = self:input_index(#self.ships)
+            if idx == nil then return nil end
+            local previous_idx = self:get_ship_index(ship.value)
+            if previous_idx ~= nil then
+                local inverted_ship = self.ships[idx]
+                self.ships[previous_idx] = inverted_ship or EMPTY
+            end
         elseif self.resolve == RESOLVE.prepend then
             idx = 1
             for i = #self.ships - 1, 1, -1 do
-               self.ships[i + 1] = self.ships[i]
+                self.ships[i + 1] = self.ships[i]
             end
         end
         -- if active buffer is already docked. should swap with other buffer 3 > 4 4 > 3
     end
 
     self.ships[idx or 1] = ship
-
+    if ship.__index == Ship then
+        print(icons.check .. " " .. ship:format_name() .. " moved to index " .. (idx or 1))
+    end
+    self.harbor.sessions:save()
     return ship
 end
 
----@param target number|string|Ship
+---@param target? number|string|Ship
 function Fleet:remove(target)
     local index = nil
-    if type(target) == "number" then
+    if target == nil then
+        local curr_name = buffer:get_current().name
+        index = self:get_ship_index(curr_name)
+    elseif type(target) == "number" then
         index = target
     elseif type(target) == "string" then
         index = self:get_ship_index(target)
@@ -103,10 +125,12 @@ function Fleet:remove(target)
     end
 
     if index == nil then
-        error("Invalid target for removal: must be either index, path string, or Ship containing .value")
+        error(icons.error .. " Invalid target for removal: must be either index, path string, or Ship containing .value")
     end
 
+    local previous_ship = self.ships[index]
     self:set(EMPTY, index)
+    return previous_ship
 end
 
 ---comment
@@ -158,14 +182,35 @@ function Fleet:get_next_empty_idx()
     return found
 end
 
+---@return number?
+function Fleet:get_next_populated_idx(starting_index)
+    local found = nil
+    for i = starting_index + 1, #self.ships, 1 do
+        if self.ships[i] ~= EMPTY then
+            found = i
+            break
+        end
+    end
+
+    if found == nil then
+        for i = 1, starting_index - 1, 1 do
+            if self.ships[i] ~= EMPTY then
+                found = i
+                break
+            end
+        end
+    end
+
+    return found
+end
+
 function Fleet:cycle()
-    local next_index = 1
     local curr_buf = buffer:get_current()
     local curr_index = self:get_ship_index(curr_buf.name)
-    if curr_index and curr_index + 1 <= #self.ships then
-        next_index = curr_index + 1
+    local next_index = self:get_next_populated_idx(curr_index or 0)
+    if next_index ~= nil then
+        self:show(next_index)
     end
-    self:show(next_index)
 end
 
 return Fleet

@@ -4,8 +4,11 @@ local Fleet = require("harbor.fleet")
 local Bay = setmetatable({}, { __index=Fleet })
 Bay.__index = Bay
 
-function Bay:new()
-    local instance = Fleet.new(self, "Bay", 3, RESOLVE.prepend)
+---@param harbor Harbor
+---@return Bay
+function Bay:new(harbor)
+    ---@class Bay
+    local instance = Fleet.new(self, harbor,"Bay", 3, RESOLVE.prepend)
     return instance
 end
 
