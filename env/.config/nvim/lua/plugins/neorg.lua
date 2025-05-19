@@ -20,7 +20,6 @@ return {
                 },
             }            
         }
-        vim.keymap.set("n", "<leader> a", "<Plug>(neorg.pivot.list.toggle)", {})
     end,
     run = ":Neorg sync-parsers",
     requires = "nvim-lua/plenary.nvim",

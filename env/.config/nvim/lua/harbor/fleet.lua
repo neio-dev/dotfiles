@@ -19,7 +19,7 @@ Fleet.__index = Fleet
 
 ---@param harbor Harbor
 ---@param name string
----@param length number
+---@paam length number
 function Fleet.new(self, harbor, name, length, resolve)
     local instance = setmetatable({
         name = name,
@@ -76,6 +76,7 @@ end
 ---@param index? number
 ---@return Ship?
 function Fleet:set(ship, index)
+    local previous_ship = nil
     local idx = index or self:get_next_empty_idx()
     if ship == nil then
         local curr_buf = buffer:get_current()
@@ -88,6 +89,7 @@ function Fleet:set(ship, index)
         if self.resolve == RESOLVE.replace then
             idx = self:input_index(#self.ships)
             if idx == nil then return nil end
+            previous_ship = self.ships[idx or 1]
             local previous_idx = self:get_ship_index(ship.value)
             if previous_idx ~= nil then
                 local inverted_ship = self.ships[idx]
@@ -107,7 +109,7 @@ function Fleet:set(ship, index)
         print(icons.check .. " " .. ship:format_name() .. " moved to index " .. (idx or 1))
     end
     self.harbor.sessions:save()
-    return ship
+    return { ship = ship, previous_ship = previous_ship }
 end
 
 ---@param target? number|string|Ship
@@ -129,8 +131,34 @@ function Fleet:remove(target)
     end
 
     local previous_ship = self.ships[index]
-    self:set(EMPTY, index)
+
+    if self.resolve == RESOLVE.replace then
+        self:set(EMPTY, index)
+    elseif self.resolve == RESOLVE.prepend then
+        -- [b, d, g]
+        --
+        -- index = 1, i = 2, l= 2
+        -- self.ships[1] = self.ships[2]
+        -- self.ships[2] = self.ships[3]
+        for i = index + 1, #self.ships do
+            self.ships[i - 1] = self.ships[i] 
+        end
+
+        self.ships[#self.ships] = EMPTY
+    end
     return previous_ship
+end
+
+---@private
+function Fleet:find_and_focus_win(taeget_path)
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        local buf_path = vim.api.nvim_buf_get_name(buf)
+
+        if buf_path == target_path then
+            vim.api.nvim_set_current_win(win)
+        end
+    end
 end
 
 ---comment
@@ -143,7 +171,7 @@ function Fleet:show(index)
 
     local path = ship.value
     local bufnr = vim.fn.bufnr(path)
-
+    -- self:find_and_focus_win(path)
     if bufnr ~= -1 then
         vim.api.nvim_set_current_buf(bufnr)
     else
@@ -152,7 +180,7 @@ function Fleet:show(index)
 end
 
 ---comment
----@param name string|{}
+---@param name? string|{}
 ---@return number?
 function Fleet:get_ship_index(name)
     local found_index = nil

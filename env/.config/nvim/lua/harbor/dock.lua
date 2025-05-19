@@ -14,16 +14,25 @@ function Dock:new(harbor)
     return instance
 end
 
-function Dock:set(ship, index)
-    ship = Fleet.set(self, ship, index)
-
+function Dock:set(_ship, index)
+    local ship, previous_ship = Fleet.set(self, _ship, index)
+    index = self:get_ship_index(ship and ship.value or nil)
     local bay = self.harbor.bay
     if bay ~= nil and ship ~= nil then
-        local bay_ship_index = bay:get_ship_index(ship.value)
+       local bay_ship_index = bay:get_ship_index(ship.value)
         if bay_ship_index ~= nil then
-            bay:set(EMPTY, bay_ship_index)
+            bay:remove(bay_ship_index)
         end
-    end
+        if previous_ship ~= nil and previous_ship ~= EMPTY then
+            print("previous ship", previous_ship.value, index)
+            bay:set(previous_ship)
+        end
+     end
+end
+
+function Dock:show(index)
+    self.harbor.bay:close_split()
+    Fleet.show(self, index)
 end
 
 function Dock:remove(target)

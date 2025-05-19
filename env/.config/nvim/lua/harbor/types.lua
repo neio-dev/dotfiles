@@ -17,6 +17,10 @@
 ---@field resolve? RESOLVE.replace|RESOLVE.prepend
 ---@field harbor Harbor
 
+---@class Bay: Fleet
+
+---@class Dock: Fleet
+
 ---@class Config
 ---@field bay Fleet
 
