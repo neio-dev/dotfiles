@@ -51,7 +51,6 @@ local function get_diagnostic(name)
     local buf = name and buffer:get(name) or nil
     if buf == nil then return "" end
     local bufnr = buf.number
-    print("DEBUG BUF", buf, bufnr, buf.name)
     if bufnr ~= -1 then
         local diagnostics = vim.diagnostic.get(bufnr)
         local severity = 0

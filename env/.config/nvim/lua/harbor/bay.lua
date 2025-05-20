@@ -10,7 +10,7 @@ Bay.__index = Bay
 ---@return Bay
 function Bay:new(harbor)
     ---@class Bay
-    local instance = Fleet.new(self, harbor, "Bay", 3, RESOLVE.prepend)
+    local instance = Fleet.new(self, harbor, "bay", 3, RESOLVE.prepend)
     instance.split_id = nil
     return instance
 end

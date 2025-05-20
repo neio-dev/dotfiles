@@ -14,6 +14,12 @@ return {
                     colorscheme = { enable_preview = true }
                 }
           })
+--          telescope.register_extension({
+--            exports = {
+--                harbor = require("harbor.extensions").telescope
+--            }
+--          })
+--          telescope.load_extension('harbor')
           telescope.load_extension('harpoon')
       end,
     }

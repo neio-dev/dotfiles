@@ -22,12 +22,14 @@ function SessionManager:new(harbor)
     return instance
 end
 
-function SessionManager:parse_fleet(fleet_data)
+---@param fleet_data {}
+---@param list_name PossibleList
+function SessionManager:parse_fleet(fleet_data, list_name)
     local parsed_fleet_data = {}
 
     ---@type Ship[]
-    for index, iterated_ship in ipairs(fleet_data) do
-        local ship = (iterated_ship.value == nil) and (EMPTY) or (Ship:new(iterated_ship.value, iterated_ship.position))
+    for index, iterated_ship in ipairs(fleet_data[list_name]) do
+        local ship = (iterated_ship.value == nil) and (EMPTY) or (Ship:new(iterated_ship.value, iterated_ship.position, list_name))
         table.insert(
             parsed_fleet_data,
             ship
@@ -49,11 +51,11 @@ function SessionManager:load()
     local data = vim.fn.json_decode(json_string)
 
     if data.bay then
-        self.harbor.bay.ships = self:parse_fleet(data.bay)
+        self.harbor.bay.ships = self:parse_fleet(data, "bay")
     end
 
     if data.dock then
-        self.harbor.dock.ships = self:parse_fleet(data.dock)
+        self.harbor.dock.ships = self:parse_fleet(data, "dock")
     end
 end
 

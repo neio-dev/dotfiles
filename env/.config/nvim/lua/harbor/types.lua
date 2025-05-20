@@ -1,15 +1,20 @@
 ---@class Harbor
 ---@field dock Dock
 ---@field bay Bay
+---@field lighthouse Lighthouse
 ---@field extensions {[string]: Extension}
+---@field active_ship? Ship
 
 ---@class CursorPosition
 ---@field col number
 ---@field row number
 
+---@alias PossibleList "dock"|"bay"
+
 ---@class Ship
 ---@field value string
 ---@field position CursorPosition 
+---@field current_list PossibleList 
 
 ---@class Fleet
 ---@field name string
@@ -32,5 +37,7 @@
 ---@field path string
 ---@field dir string
 ---@field harbor Harbor
+
+---@class Lighthouse
 
 return {}

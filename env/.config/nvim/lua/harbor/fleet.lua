@@ -86,7 +86,7 @@ function Fleet:set(ship, index)
         ship = Ship:new(curr_buf.name, curr_buf.cursor)
     end
 
-
+    ship.current_list = self.name
     if (idx == nil) then
         if self.resolve == RESOLVE.replace then
             idx = self:input_index(#self.ships)
@@ -110,6 +110,7 @@ function Fleet:set(ship, index)
     if ship.__index == Ship then
         print(icons.check .. " " .. ship:format_name() .. " moved to index " .. (idx or 1))
     end
+    self.harbor.active_ship = ship
     self.harbor.sessions:save()
     return { ship = ship, previous_ship = previous_ship }
 end
@@ -166,6 +167,11 @@ end
 ---comment
 ---@param index number
 function Fleet:show(index)
+    if self.harbor.active_ship ~= nil then
+        self.harbor.active_ship:update_cursor()
+        self.harbor.sessions:save()
+    end
+    ---@type Ship
     local ship = self.ships[tonumber(index)]
     if ship == EMPTY then
         return
@@ -173,12 +179,16 @@ function Fleet:show(index)
 
     local path = ship.value
     local bufnr = vim.fn.bufnr(path)
-    -- self:find_and_focus_win(path)
+    self:find_and_focus_win(path)
     if bufnr ~= -1 then
         vim.api.nvim_set_current_buf(bufnr)
     else
         vim.cmd("edit " .. path)
+        print("edit debug", ship.position, ship.position.col, ship.position.row)
+        vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), {ship.position.row, ship.position.col})
     end
+
+    self.harbor.active_ship = ship
 end
 
 ---comment

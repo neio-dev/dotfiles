@@ -5,6 +5,13 @@ local Commands = {}
 local get_commands = function(harbor)
     return {
         {
+            "HrbLighthouse",
+            function()
+                harbor.lighthouse:input()
+            end,
+            { desc = "Show Lighthouse prompt" },
+        },
+        {
             "HrbDock",
             function()
                 local to_print = ""
@@ -20,19 +27,25 @@ local get_commands = function(harbor)
             "HrbDev",
             function()
                 local path = "/home/dev/.config/nvim/lua/harbor"
-                harbor.dock.ships = {
-                    Ship:new(path .. "/harbor.lua"),
-                    Ship:new(path .. "/fleet.lua"),
-                    Ship:new(path .. "/notes.md"),
-                    Ship:new(path .. "/types.lua"),
-                }
-                harbor.bay.ships = {
-                    Ship:new(path .. "/dock.lua"),
-                    Ship:new(path .. "/bay.lua"),
-                    Ship:new(path .. "/sessions.lua"),
-                }
+                harbor.dock.ships = {EMPTY, EMPTY, EMPTY, EMPTY}
+                harbor.bay.ships = {EMPTY, EMPTY, EMPTY}
+                harbor.dock:set(Ship:new(path .. "/harbor.lua"))
+                harbor.dock:set(Ship:new(path .. "/fleet.lua"))
+                harbor.dock:set(Ship:new(path .. "/notes.md"))
+                harbor.dock:set(Ship:new(path .. "/types.lua"))
+                harbor.bay:set(Ship:new(path .. "/dock.lua"))
+                harbor.bay:set(Ship:new(path .. "/bay.lua"))
+                harbor.bay:set(Ship:new(path .. "/sessions.lua"))
             end,
             { desc = "Load test harbor session" }
+        },
+        {
+            "HrbCurrentList",
+            function()
+                print(harbor:get_current_list())
+            end,
+            { desc = "Print current list" }
+
         },
         {
             "HrbLoad",

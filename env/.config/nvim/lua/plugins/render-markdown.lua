@@ -12,8 +12,12 @@ return {
                     highlight = 'RenderMarkdownUnchecked',
                     -- Highlight for item associated with unchecked checkbox.
                     scope_highlight = nil,
-                }
-            }
+                },
+                custom = {
+                    todo_error = { raw = '[!]', rendered = '󱋭 ', highlight = 'RenderMarkdownUnchecked', scope_highlight = nil },
+                    todo_fix = { raw = '[.]', rendered = '󰄗 ', highlight = 'RenderMarkdownUnchecked', scope_highlight = nil },
+                },
+            },
         })
     end,
 }

@@ -10,7 +10,7 @@ Dock.__index = Dock
 ---@return Dock
 function Dock:new(harbor)
     ---@class Dock
-    local instance = Fleet.new(self, harbor, "Dock", 4)
+    local instance = Fleet.new(self, harbor, "dock", 4)
     return instance
 end
 

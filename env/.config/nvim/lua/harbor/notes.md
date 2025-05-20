@@ -6,20 +6,20 @@
 - [x] connect bay to dock
 - [x] prevent add to same list 
 - [x] fix nvim present in bay
-- [ ] cursor position
+- [x] cursor position
 - [ ] outside history vs visible
 - [ ] differentiate name
 - [x] ease input process
 - [x] fix cycle when last is x
-- [ ] add a currentlist accessor
+- [x] add a currentlist accessor
 - [ ] add previous index toggle on repeating shortcut
 - [ ] [SPLIT] handle splits
 - [ ] lighthouse
 - [ ] add config
 - [-] [lualine] highlight diagnostic and git status
     - [x] add lsp diag
-    - [?] add git status [TO FIX]
-- [ ] [telescope] add telescope extension
+    - [.] add git status [TO FIX]
+- [-] [telescope] add telescope extension
 - [x] cycle first position for "append"
 - [x] if cycle not current list, select list, else cycle
 - [ ] pin panel - eg pin a buffer into a sidepanel independant of current buffer switching, can focus panel, close it, remove it
@@ -33,5 +33,6 @@
 - [x] when moving from bay to dock, bay entry stays
 - [x] in prepend should always prepend on set
 - [x] fix empty name on load
+- [ ] fix cycle when empty in middle
 ---
 
