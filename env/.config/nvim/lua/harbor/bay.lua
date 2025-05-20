@@ -1,4 +1,5 @@
 local Fleet = require("harbor.fleet")
+local buffer = require("harbor.buffer")
 
 ---@class Bay
 ---@field split_id? number
@@ -16,18 +17,33 @@ end
 
 function Bay:set(ship, index)
     -- vim.cmd("vsplit")
-    self:show_split()
+    -- self:show_split()
     Fleet.set(self, ship, index)
 end
 
 function Bay:show_split()
     local saved_split_id = self.split_id
-    print('current save id', saved_split_id)
     local current_win_id = vim.api.nvim_get_current_win()
+    local current_buf_nr = buffer:get_current().number
     if saved_split_id == nil or vim.api.nvim_win_is_valid(saved_split_id) == false then
+        if saved_split_id == nil then
+            local last_buffer = vim.fn.bufnr("#")
+            if last_buffer ~= -1 then
+                vim.api.nvim_set_current_buf(last_buffer)
+            else
+                vim.cmd("enew")
+                vim.bo.buftype = "nofile"
+                vim.bo.bufhidden = "hide"
+                vim.bo.swapfile = false
+            end
+        end
         vim.cmd("topleft vsplit")
-        self.split_id = vim.api.nvim_get_current_win()
-        print('new save id', current_win_id)
+        vim.cmd("vertical resize 60")
+
+        local win_id = vim.api.nvim_get_current_win()
+        print('new', current_buf_nr, current_win_id)
+        vim.api.nvim_win_set_buf(win_id, current_buf_nr)
+        self.split_id = win_id
     elseif current_win_id ~= saved_split_id then
         vim.api.nvim_set_current_win(saved_split_id)
     end
@@ -41,7 +57,7 @@ end
 
 function Bay:show(index)
     -- vim.cmd("vsplit")
-    self:show_split()
+    -- self:show_split()
     Fleet.show(self, index)
 end
 

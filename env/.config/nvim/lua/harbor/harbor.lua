@@ -7,7 +7,7 @@ local SessionManager = require("harbor.sessions")
 local buffer = require("harbor.buffer")
 require("harbor.types")
 
----@class Harbor
+---@class Harbrr
 local Harbor = {}
 Harbor.__index = Harbor
 function Harbor:new()
@@ -35,6 +35,7 @@ function Harbor:set_default_keybinds()
 --    vim.keymap.set("n", "<leader>h3", function() self.dock:show(3) end)
 --    vim.keymap.set("n", "<leader>h4", function() self.dock:show(4) end)
     vim.keymap.set("n", "<leader>a", function() self.dock:set() end)
+    vim.keymap.set("n", "<leader>hd", function() vim.cmd("HrbDev") end)
     vim.keymap.set("n", "<C-h>", function() self.bay:cycle() end)
     vim.keymap.set("n", "<leader>r", function() self.dock:remove() end)
     vim.keymap.set("n", "<leader>br", function() self.bay:remove() end)

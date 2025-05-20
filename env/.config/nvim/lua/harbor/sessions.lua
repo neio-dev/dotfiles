@@ -39,6 +39,7 @@ end
 
 function SessionManager:load()
     local filepath = self.dir .. "/" .. fnv1a(self.path) .. ".json"
+    if vim.fn.filereadable(filepath) == 0 then return end
     local lines = vim.fn.readfile(filepath)
     if lines == nil then return end
 

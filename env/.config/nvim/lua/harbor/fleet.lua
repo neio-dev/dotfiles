@@ -1,8 +1,10 @@
 local Ship = require("harbor.ship")
 local buffer = require("harbor.buffer")
 local icons = require("harbor.icons")
+
 -- Used in place of nil to keep table functions usable
 -- e.g. nil will stop a for loop at nil index
+---@class Empty
 EMPTY = {}
 
 ---@enum RESOLVE
@@ -74,10 +76,10 @@ end
 
 ---@param ship? Ship
 ---@param index? number
----@return Ship?
+---@return {ship: Ship|Empty|nil, previous_ship: Ship|Empty|nil}
 function Fleet:set(ship, index)
     local previous_ship = nil
-    local idx = index or self:get_next_empty_idx()
+    local idx = index or (self.resolve == RESOLVE.replace and self:get_next_empty_idx() or nil)
     if ship == nil then
         local curr_buf = buffer:get_current()
 
@@ -88,7 +90,7 @@ function Fleet:set(ship, index)
     if (idx == nil) then
         if self.resolve == RESOLVE.replace then
             idx = self:input_index(#self.ships)
-            if idx == nil then return nil end
+            if idx == nil then return { ship = nil, previous_ship = nil } end
             previous_ship = self.ships[idx or 1]
             local previous_idx = self:get_ship_index(ship.value)
             if previous_idx ~= nil then
@@ -141,7 +143,7 @@ function Fleet:remove(target)
         -- self.ships[1] = self.ships[2]
         -- self.ships[2] = self.ships[3]
         for i = index + 1, #self.ships do
-            self.ships[i - 1] = self.ships[i] 
+            self.ships[i - 1] = self.ships[i]
         end
 
         self.ships[#self.ships] = EMPTY
@@ -150,7 +152,7 @@ function Fleet:remove(target)
 end
 
 ---@private
-function Fleet:find_and_focus_win(taeget_path)
+function Fleet:find_and_focus_win(target_path)
     for _, win in ipairs(vim.api.nvim_list_wins()) do
         local buf = vim.api.nvim_win_get_buf(win)
         local buf_path = vim.api.nvim_buf_get_name(buf)
@@ -235,7 +237,19 @@ end
 function Fleet:cycle()
     local curr_buf = buffer:get_current()
     local curr_index = self:get_ship_index(curr_buf.name)
-    local next_index = self:get_next_populated_idx(curr_index or 0)
+    local next_index = self:get_next_populated_idx(curr_index or 1)
+    if self.resolve == RESOLVE.prepend then
+        if curr_index ~= nil then
+            local first_ship = self.ships[1]
+
+            for i = 2, #self.ships do
+                self.ships[i - 1] = self.ships[i]
+            end
+
+            self.ships[#self.ships] = first_ship
+        end
+        next_index = 1
+    end
     if next_index ~= nil then
         self:show(next_index)
     end
