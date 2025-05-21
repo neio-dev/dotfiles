@@ -7,6 +7,7 @@ Ship.__index = Ship
 ---@param cursor_position? CursorPosition 
 ---@param current_list? PossibleList 
 function Ship:new(name, cursor_position, current_list)
+    if cursor_position and (cursor_position.row == 0) then cursor_position.row = 1 end
     local ship = setmetatable({
         value = name,
         position = cursor_position or { col = 0, row = 1},

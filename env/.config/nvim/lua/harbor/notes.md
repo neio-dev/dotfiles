@@ -14,7 +14,7 @@
 - [x] add a currentlist accessor
 - [ ] add previous index toggle on repeating shortcut
 - [ ] [SPLIT] handle splits
-- [ ] lighthouse
+- [-] lighthouse
 - [ ] add config
 - [-] [lualine] highlight diagnostic and git status
     - [x] add lsp diag

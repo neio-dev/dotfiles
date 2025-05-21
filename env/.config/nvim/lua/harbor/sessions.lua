@@ -40,7 +40,7 @@ function SessionManager:parse_fleet(fleet_data, list_name)
 end
 
 function SessionManager:load()
-    local filepath = self.dir .. "/" .. fnv1a(self.path) .. ".json"
+    local filepath = self:get_session_path()
     if vim.fn.filereadable(filepath) == 0 then return end
     local lines = vim.fn.readfile(filepath)
     if lines == nil then return end
@@ -61,9 +61,13 @@ end
 
 function SessionManager:save()
     local json = vim.fn.json_encode
-    local filepath = self.dir .. "/" .. fnv1a(self.path) .. ".json"
+    local filepath = self:get_session_path()
     local data = { dock = self.harbor.dock:get(), bay = self.harbor.bay:get() }
     vim.fn.writefile({ json(data) }, filepath)
+end
+
+function SessionManager:get_session_path()
+    return self.dir .. "/" .. fnv1a(self.path) .. ".json"
 end
 
 return SessionManager

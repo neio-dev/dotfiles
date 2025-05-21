@@ -56,7 +56,6 @@ function Harbor:set_autocommands()
     vim.api.nvim_create_autocmd("BufEnter", {
         callback = function()
             local curr_buf = buffer:get_current()
-            print("DEBUG CURR BUFF", curr_buf.type, curr_buf.name)
             if curr_buf.type ~= "file" then
                 return
             end

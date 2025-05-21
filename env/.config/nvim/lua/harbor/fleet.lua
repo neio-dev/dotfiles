@@ -1,6 +1,7 @@
 local Ship = require("harbor.ship")
 local buffer = require("harbor.buffer")
 local icons = require("harbor.icons")
+local utils = require("harbor.utils")
 
 -- Used in place of nil to keep table functions usable
 -- e.g. nil will stop a for loop at nil index
@@ -52,26 +53,21 @@ end
 ---@return number?
 function Fleet:input_index(length)
     print(icons.ask .. " Choose index between 1 and " .. length .. ": ")
-    while true do
-        local input
-        if #self.ships < 10 then
-            input = vim.fn.getchar()
-            local input_char = vim.fn.nr2char(input)
-            if input == 27 or input_char == "q" then
-                return nil
+    local return_index = nil
+    utils.smart_input(
+        function(input)
+            local index = tonumber(input)
+            if index and index >= 1 and index <= length and index == math.floor(index) then
+                return_index = index
+            else
+                print(icons.error .. " Invalid input. Please enter an integer between 1 and " .. length)
             end
-            input = input_char
-        else
-            input = vim.fn.input("")
-        end
+        end,
+        nil,
+        nil,
+        1)
 
-        local index = tonumber(input)
-        if index and index >= 1 and index <= length and index == math.floor(index) then
-            return index
-        else
-            print(icons.error .. " Invalid input. Please enter an integer between 1 and " .. length)
-        end
-    end
+    return return_index
 end
 
 ---@param ship? Ship
@@ -183,9 +179,15 @@ function Fleet:show(index)
     if bufnr ~= -1 then
         vim.api.nvim_set_current_buf(bufnr)
     else
-        vim.cmd("edit " .. path)
-        print("edit debug", ship.position, ship.position.col, ship.position.row)
-        vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), {ship.position.row, ship.position.col})
+        vim.schedule(function()
+            --vim.schedule(function() vim.cmd("edit " .. path) end)
+             bufnr = vim.fn.bufadd(path)
+            vim.fn.bufload(bufnr)
+            vim.api.nvim_set_current_buf(bufnr)
+            print("edit debug", ship.position, ship.position.col, ship.position.row)
+            
+            --vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), { ship.position.row, ship.position.col })
+        end)
     end
 
     self.harbor.active_ship = ship

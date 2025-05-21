@@ -5,6 +5,13 @@ local Commands = {}
 local get_commands = function(harbor)
     return {
         {
+            "HrbSessionPath",
+            function()
+                print(harbor.sessions:get_session_path())
+            end,
+            { desc = "Print current session path" },
+        },
+         {
             "HrbLighthouse",
             function()
                 harbor.lighthouse:input()
