@@ -174,7 +174,7 @@ function Lighthouse:input()
                 end)
             end
 
-            vim.schedule(function() self.harbor.dock:show(index) end)
+            vim.schedule(function() self.harbor.dock:show(index)
             vim.schedule(function()
                 vim.api.nvim_set_current_win(prompt_win)
             end)
