@@ -15,6 +15,7 @@ return {
             relativenumber = true,
             --            float = { enable = true },
             number = true,
+            side = "right",
         },
         renderer = {
             highlight_git = true,

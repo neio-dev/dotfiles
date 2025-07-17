@@ -3,9 +3,14 @@ vim.keymap.set("n", "<leader>b", vim.cmd.NvimTreeToggle)
 vim.keymap.set("n", "<leader><tab>", [[<C-^>]] )
 vim.keymap.set('t','<Esc>', [[<C-\><C-n>]])
 
+-- Fzf remap
+local fzf = require("fzf-lua")
+vim.keymap.set('n', '<leader>ff', function()
+    return fzf.files({ cmd = "find -type f -not -path '*/node_modules/*' -printf '%P\n'" })
+end)
+
 -- Telescope remap
 local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', builtin.find_files)
 vim.keymap.set('n', '<C-p>', builtin.git_files)
 vim.keymap.set('n', '<leader>fg', builtin.live_grep)
 vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols)

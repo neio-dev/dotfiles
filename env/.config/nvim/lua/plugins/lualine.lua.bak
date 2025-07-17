@@ -1,5 +1,5 @@
 return {
-    'nvim-lualine/lualine.nvim',
+--    'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
         local harbor = require("harbor")
@@ -7,7 +7,7 @@ return {
             theme = 'dracula',
             tabline = {
                 lualine_a = {
-                    harbor.extensions.lualine,
+                    -- harbor.extensions.lualine,
                 },
             },
         })

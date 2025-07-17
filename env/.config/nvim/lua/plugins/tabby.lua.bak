@@ -1,5 +1,5 @@
 return {
-    "nanozuki/tabby.nvim",
+--    "nanozuki/tabby.nvim",
     config = function()
     local theme = {
       -- this is carbonfox theme

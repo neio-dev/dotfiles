@@ -4,3 +4,8 @@ vim.opt.termguicolors = true
 -- vim.g.nvim_tree_respect_buf_cwd = 1
 require("config.lazy")
 require("neio")
+
+function _G.ReloadModule(name)
+  package.loaded[name] = nil
+  return require(name)
+end

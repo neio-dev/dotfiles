@@ -1,6 +1,6 @@
 local function use_scheme(plugin)
     return function()
-        vim.cmd.colorscheme(plugin)
+        -- vim.cmd.colorscheme(plugin)
         require(plugin).setup({
             lazy = false,
             priority = 1000,

@@ -63,6 +63,7 @@ function SessionManager:save()
     local json = vim.fn.json_encode
     local filepath = self:get_session_path()
     local data = { dock = self.harbor.dock:get(), bay = self.harbor.bay:get() }
+    vim.fn.mkdir(self.dir, "p")
     vim.fn.writefile({ json(data) }, filepath)
 end
 

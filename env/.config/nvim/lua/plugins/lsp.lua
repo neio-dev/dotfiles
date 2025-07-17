@@ -1,11 +1,21 @@
 local function enable_lsps(lspconfig)
     -- Lua LSP
     lspconfig.lua_ls.setup({
-        cmd = { vim.fn.expand("~/lsp-servers/lua-lsp/bin/lua-language-server") },
-        cmd_cwd = vim.fn.expand("~/lsp-servers/lua-lsp/"),
-        Lua = {
-            workspace = {
-                library = { vim.fn.expand("~/.local/bin/aseprite/Aseprite-Library.lua") }
+        settings = {
+            Lua = {
+                runtime = {
+                    version = "LuaJIT",
+                    path = vim.split(package.path, ";"),
+                },
+                workspace = {
+                    library = {
+                        vim.api.nvim_get_runtime_file("", true),
+                    },
+                    checkThirdParty = false,
+                },
+                diagnostics = {
+                    globals = { "vim" }
+                }
             }
         }
     })
@@ -17,6 +27,9 @@ local function enable_lsps(lspconfig)
 
     -- HTML LSP
     lspconfig.html.setup({})
+
+    -- CSS LSP
+    lspconfig.cssls.setup({})
 
     -- TS LSP
     lspconfig.ts_ls.setup({
@@ -84,8 +97,8 @@ return { {
             },
             mapping = cmp.mapping.preset.insert({
                 ["<C-Space>"] = cmp.mapping.complete(),
-                ["<CR>"] = cmp.mapping.confirm({ select = true }),
-                ["<Tab>"] = cmp.mapping(function(fallback)
+                ["<Tab>"] = cmp.mapping.confirm({ select = true }),
+                ["<CR>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
                         cmp.select_next_item()
                     else
@@ -99,7 +112,7 @@ return { {
                         fallback()
                     end
                 end, { "i", "s" }),
-                ["<Esc>"] = cmp.mapping(function(fallback)
+                ["<S-Esc>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
                         cmp.abort()
                     else

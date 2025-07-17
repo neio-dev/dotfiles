@@ -7,6 +7,6 @@ return {
             render = "compact",
             timeout = 2500,
         })
-        vim.notify = notify
+--        vim.notify = notify
     end,
 }
