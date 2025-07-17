@@ -22,12 +22,12 @@ function Dock:set(_ship, index)
     local bay = self.harbor.bay
     if bay ~= nil and fleet.ship ~= nil then
        local bay_ship_index = bay:get_ship_index(fleet.ship.value)
-       print("bay REMOVE", bay_ship_index, fleet.ship.value)
+       -- print("bay REMOVE", bay_ship_index, fleet.ship.value)
         if bay_ship_index ~= nil then
             bay:remove(bay_ship_index)
         end
         if fleet.previous_ship ~= nil and fleet.previous_ship ~= EMPTY then
-            print("fleet.previous ship", fleet.previous_ship.value, index)
+            -- print("fleet.previous ship", fleet.previous_ship.value, index)
             bay:set(fleet.previous_ship)
         end
      end

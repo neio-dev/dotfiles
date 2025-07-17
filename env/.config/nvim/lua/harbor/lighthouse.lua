@@ -54,9 +54,9 @@ local function centered_input(prompt, on_input, callback, on_cancel)
         callback = function(args)
             local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
             local input = lines[1]
-            print("TextChangedI", input)
+            --print("TextChangedI", input)
             local char = string.sub(input, #input, #input)
-            print("TextChangedI", char)
+            --print("TextChangedI", char)
             if #input <= last_width then
                 char = "__backspace"
             end
@@ -105,11 +105,11 @@ function Lighthouse:input()
         function(input, full_input, prompt_win)
             last_win = lighthouse_ships[#lighthouse_ships]
             if input == "__backspace" then
-                print("BSPACE", unpack(lighthouse_ships))
+                --print("BSPACE", unpack(lighthouse_ships))
                 vim.schedule(function()
                     local l_win = lighthouse_ships[#lighthouse_ships]
                     if l_win then
-                        print("SHIIIIIPS", unpack(lighthouse_ships))
+                        --print("SHIIIIIPS", unpack(lighthouse_ships))
                         vim.api.nvim_win_close(l_win, true)
                         table.remove(lighthouse_ships, #lighthouse_ships)
                     end
@@ -124,7 +124,7 @@ function Lighthouse:input()
                 end
                 reset = true
             end
-            print('input', input)
+            --print('input', input)
             local temp = input
             if prompt_win == vim.api.nvim_get_current_win() then
                 pcall(vim.api.nvim_set_current_win, last_win or current_win)
@@ -140,9 +140,9 @@ function Lighthouse:input()
             end
 
             local index = get_index(MAP, string.lower(temp))
-            print("INDEX", index, temp)
+            --print("INDEX", index, temp)
             if index == nil then return end
-            print("INDEX", index, temp)
+            --print("INDEX", index, temp)
             if #full_input > 1 then
                 local is_horizontal = string.upper(MAP[index]) == temp
                 local wins_before = vim.api.nvim_list_wins()
@@ -180,7 +180,7 @@ function Lighthouse:input()
         end,
         nil,
         function()
-            print("ON CANCEL")
+            --print("ON CANCEL")
             vim.cmd("silent! source /tmp/" .. session_name)
         end
     )

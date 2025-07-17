@@ -41,7 +41,7 @@ function Bay:show_split()
         vim.cmd("vertical resize 60")
 
         local win_id = vim.api.nvim_get_current_win()
-        print('new', current_buf_nr, current_win_id)
+        -- print('new', current_buf_nr, current_win_id)
         vim.api.nvim_win_set_buf(win_id, current_buf_nr)
         self.split_id = win_id
     elseif current_win_id ~= saved_split_id then

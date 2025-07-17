@@ -52,7 +52,7 @@ end
 ---@param length number
 ---@return number?
 function Fleet:input_index(length)
-    print(icons.ask .. " Choose index between 1 and " .. length .. ": ")
+    --print(icons.ask .. " Choose index between 1 and " .. length .. ": ")
     local return_index = nil
     utils.smart_input(
         function(input)
@@ -60,7 +60,7 @@ function Fleet:input_index(length)
             if index and index >= 1 and index <= length and index == math.floor(index) then
                 return_index = index
             else
-                print(icons.error .. " Invalid input. Please enter an integer between 1 and " .. length)
+                --print(icons.error .. " Invalid input. Please enter an integer between 1 and " .. length)
             end
         end,
         nil,
@@ -104,7 +104,7 @@ function Fleet:set(ship, index)
 
     self.ships[idx or 1] = ship
     if ship.__index == Ship then
-        print(icons.check .. " " .. ship:format_name() .. " moved to index " .. (idx or 1))
+        --print(icons.check .. " " .. ship:format_name() .. " moved to index " .. (idx or 1))
     end
     self.harbor.active_ship = ship
     self.harbor.sessions:save()
@@ -184,7 +184,7 @@ function Fleet:show(index)
              bufnr = vim.fn.bufadd(path)
             vim.fn.bufload(bufnr)
             vim.api.nvim_set_current_buf(bufnr)
-            print("edit debug", ship.position, ship.position.col, ship.position.row)
+            --print("edit debug", ship.position, ship.position.col, ship.position.row)
             
             --vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), { ship.position.row, ship.position.col })
         end)
