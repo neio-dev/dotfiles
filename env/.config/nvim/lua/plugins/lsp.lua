@@ -1,6 +1,11 @@
-local function enable_lsps(lspconfig)
-    -- Lua LSP
-    lspconfig.lua_ls.setup({
+local function lsp_add(ls, config)
+    if config then vim.lsp.config(ls, config) end
+
+    vim.lsp.enable(ls)
+end
+
+local function enable_lsps()
+    lsp_add("lua_ls", {
         settings = {
             Lua = {
                 runtime = {
@@ -20,28 +25,32 @@ local function enable_lsps(lspconfig)
         }
     })
 
-    lspconfig.mdx_analyzer.setup({})
-
-    -- Python LSP
-    lspconfig.pyright.setup({})
-
-    -- HTML LSP
-    lspconfig.html.setup({})
-
-    -- CSS LSP
-    lspconfig.cssls.setup({})
-
-    -- TS LSP
-    lspconfig.ts_ls.setup({
+    lsp_add("mdx_analyzer")
+    lsp_add("pyright")
+    lsp_add("html")
+    lsp_add("jsonls")
+    lsp_add("cssls")
+    lsp_add("ts_ls", {
         filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
     })
-
-    -- GLSL LSP
-    lspconfig.glsl_analyzer.setup {}
-    -- EMMET LSP
-    lspconfig.emmet_ls.setup({
+    lsp_add("glsl_analyzer")
+    lsp_add("emmet_ls", {
         filetypes = { "css", "eruby", "html", "javascript", "javascriptreact", "less", "sass", "scss", "svelte", "pug", "typescriptreact", "vue" },
         init_options = {
+            css = {
+                snippets = {
+                    lf = "left: 100%;",
+                    tf = "top: 100%;",
+                    bf = "bottom: 100%;",
+                    rf = "right: 100%;",
+                    wf = "width: 100%;",
+                    mwf = "min-width: 100%;",
+                    Mwf = "max-width: 100%;",
+                    hf = "height: 100%;",
+                    mhf = "min-height: 100%;",
+                    Mhf = "max-height: 100%;",
+                },
+            },
             html = {
                 options = {
                     -- For possible options, see: https://github.com/emmetio/emmet/blob/master/src/config.ts#L79-L267
@@ -78,11 +87,11 @@ return { {
                 vim.keymap.set('n', '<leader>lR', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
                 vim.keymap.set('n', '<leader>ls', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
                 vim.keymap.set('n', '<leader>lr', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
-                vim.keymap.set({ 'n', 'x' }, '<leader>lf', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
+                vim.keymap.set({ 'n', 'x' }, '<leader>e', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
                 vim.keymap.set('n', '<leader>la', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
             end,
         })
-        enable_lsps(lspconfig)
+        enable_lsps()
         local cmp = require('cmp')
 
         cmp.setup({
@@ -96,15 +105,13 @@ return { {
                 end,
             },
             mapping = cmp.mapping.preset.insert({
+                ["<C-e>"] = cmp.mapping.select_next_item(),
+                ["<C-i>"] = cmp.mapping.select_prev_item(),
+                ["<Up>"] = cmp.config.disable,
+                ["<Down>"] = cmp.config.disable,
                 ["<C-Space>"] = cmp.mapping.complete(),
                 ["<Tab>"] = cmp.mapping.confirm({ select = true }),
-                ["<CR>"] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        cmp.select_next_item()
-                    else
-                        fallback()
-                    end
-                end, { "i", "s" }),
+                ["<CR>"] = cmp.config.disable,
                 ["<S-Tab>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
                         cmp.select_prev_item()

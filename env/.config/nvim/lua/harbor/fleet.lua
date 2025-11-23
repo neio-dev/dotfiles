@@ -52,7 +52,6 @@ end
 ---@param length number
 ---@return number?
 function Fleet:input_index(length)
-    --print(icons.ask .. " Choose index between 1 and " .. length .. ": ")
     local return_index = nil
     utils.smart_input(
         function(input)
@@ -60,7 +59,6 @@ function Fleet:input_index(length)
             if index and index >= 1 and index <= length and index == math.floor(index) then
                 return_index = index
             else
-                --print(icons.error .. " Invalid input. Please enter an integer between 1 and " .. length)
             end
         end,
         nil,
@@ -104,7 +102,6 @@ function Fleet:set(ship, index)
 
     self.ships[idx or 1] = ship
     if ship.__index == Ship then
-        --print(icons.check .. " " .. ship:format_name() .. " moved to index " .. (idx or 1))
     end
     self.harbor.active_ship = ship
     self.harbor.sessions:save()
@@ -167,9 +164,10 @@ function Fleet:show(index)
         self.harbor.active_ship:update_cursor()
         self.harbor.sessions:save()
     end
+
     ---@type Ship
     local ship = self.ships[tonumber(index)]
-    if ship == EMPTY then
+    if ship == EMPTY or ship == nil then
         return
     end
 
@@ -181,11 +179,9 @@ function Fleet:show(index)
     else
         vim.schedule(function()
             --vim.schedule(function() vim.cmd("edit " .. path) end)
-             bufnr = vim.fn.bufadd(path)
+            bufnr = vim.fn.bufadd(path)
             vim.fn.bufload(bufnr)
             vim.api.nvim_set_current_buf(bufnr)
-            --print("edit debug", ship.position, ship.position.col, ship.position.row)
-            
             --vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), { ship.position.row, ship.position.col })
         end)
     end
@@ -228,7 +224,7 @@ end
 function Fleet:get_next_populated_idx(starting_index)
     local found = nil
     for i = starting_index + 1, #self.ships, 1 do
-        if self.ships[i] ~= EMPTY then
+        if self.ships[i].value then
             found = i
             break
         end
@@ -236,34 +232,34 @@ function Fleet:get_next_populated_idx(starting_index)
 
     if found == nil then
         for i = 1, starting_index - 1, 1 do
-            if self.ships[i] ~= EMPTY then
+            if self.ships[i].value then
                 found = i
                 break
             end
         end
     end
-
     return found
 end
 
 function Fleet:cycle()
     local curr_buf = buffer:get_current()
-    local curr_index = self:get_ship_index(curr_buf.name)
-    local next_index = self:get_next_populated_idx(curr_index or 1)
+    local curr_index = self:get_ship_index(curr_buf.name) or (self.last_index and self.last_index - 1)
+    local next_index = self:get_next_populated_idx(curr_index or 0)
     if self.resolve == RESOLVE.prepend then
-        if curr_index ~= nil then
+        if curr_index ~= nil or not self.ships[1].value then
             local first_ship = self.ships[1]
 
             for i = 2, #self.ships do
-                self.ships[i - 1] = self.ships[i]
+                -- self.ships[i - 1] = self.ships[i]
             end
 
-            self.ships[#self.ships] = first_ship
+            -- self.ships[#self.ships] = first_ship
         end
-        next_index = 1
+        -- next_index = 1
     end
     if next_index ~= nil then
         self:show(next_index)
+        self.last_index = next_index
     end
 end
 

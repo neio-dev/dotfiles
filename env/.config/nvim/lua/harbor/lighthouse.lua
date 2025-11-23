@@ -16,14 +16,14 @@ local function handle_user_input(win, callback)
     end)
 end
 
-local function centered_input(prompt, on_input, callback, on_cancel)
+function Lighthouse:centered_input(prompt, on_input, callback, on_cancel)
     local full_input = ""
     local width = math.floor(vim.o.columns * 0.5)
     local height = 1
     local row = math.floor((vim.o.lines - height) / 2) - 1
     local col = math.floor((vim.o.columns - width) / 2)
     local current_win = vim.schedule(function() vim.api.nvim_get_current_win() end)
-    
+
     -- Create a scratch buffer
     local buf = vim.api.nvim_create_buf(false, true)
     local ns = vim.api.nvim_create_namespace("input_prompt")
@@ -60,7 +60,7 @@ local function centered_input(prompt, on_input, callback, on_cancel)
             if #input <= last_width then
                 char = "__backspace"
             end
-            if on_input then
+            if on_input and #input > 0 then
                 vim.schedule(function()
                     on_input(char, input, win)
                 end)
@@ -82,6 +82,8 @@ local function centered_input(prompt, on_input, callback, on_cancel)
         vim.api.nvim_win_close(win, true)
         if on_cancel ~= nil then on_cancel() end
     end, { buffer = buf, noremap = true, silent = true })
+
+    self.prompt_win = win
     return buf, win
 end
 
@@ -93,97 +95,66 @@ local function get_index(table, value)
     return nil
 end
 
+function Lighthouse:focus_input()
+    if self.prompt_win then
+        vim.api.nvim_set_current_win(self.prompt_win)
+    end
+end
+
 function Lighthouse:input()
     local session_name = "harbor_temp_session.vim"
     vim.cmd("mksession! /tmp/" .. session_name)
-    local current_win = vim.api.nvim_get_current_win()
-    local lighthouse_ships = { current_win }
+    self.initial_win = vim.api.nvim_get_current_win()
+    self.lighthouse_ships = {}
     local reset = false
     local last_win = nil
-    centered_input(
+    self:centered_input(
         "Lighthouse position",
         function(input, full_input, prompt_win)
-            last_win = lighthouse_ships[#lighthouse_ships]
-            if input == "__backspace" then
-                --print("BSPACE", unpack(lighthouse_ships))
-                vim.schedule(function()
-                    local l_win = lighthouse_ships[#lighthouse_ships]
-                    if l_win then
-                        --print("SHIIIIIPS", unpack(lighthouse_ships))
-                        vim.api.nvim_win_close(l_win, true)
-                        table.remove(lighthouse_ships, #lighthouse_ships)
-                    end
-                end)
-                return
-            end
-            if not reset then
-                for _, iwin in ipairs(vim.api.nvim_list_wins()) do
-                    if iwin ~= prompt_win and iwin ~= current_win then
-                        vim.schedule(function() pcall(vim.api.nvim_win_close, iwin, true) end)
-                    end
-                end
-                reset = true
-            end
-            --print('input', input)
-            local temp = input
-            if prompt_win == vim.api.nvim_get_current_win() then
-                pcall(vim.api.nvim_set_current_win, last_win or current_win)
-            end
-            if string.lower(temp) == "h" then
-                if #full_input > 1 then
-                    local is_horizontal = "H" == temp
-                    vim.cmd(is_horizontal and "belowright split" or "vsplit")
-                    vim.cmd("wincmd l")
-                end
+            -- SHOW WINDOW
+            self:handle_input_win(input)
 
-                self.harbor.bay:show(1)
-            end
-
-            local index = get_index(MAP, string.lower(temp))
-            --print("INDEX", index, temp)
-            if index == nil then return end
-            --print("INDEX", index, temp)
-            if #full_input > 1 then
-                local is_horizontal = string.upper(MAP[index]) == temp
-                local wins_before = vim.api.nvim_list_wins()
-
-                vim.schedule(function()
-                    vim.cmd(is_horizontal and "belowright split" or "vsplit")
-                    vim.cmd("wincmd l")
-                    local wins_after = vim.api.nvim_list_wins()
-                    local new_win
-
-                    for _, win in ipairs(wins_after) do
-                        local is_new = true
-                        for _, old_win in ipairs(wins_before) do
-                            if win == old_win then
-                                is_new = false
-                                break
-                            end
-                        end
-                        if is_new then
-                            new_win = win
-                            break
-                        end
-                    end
-
-                    if new_win then
-                        table.insert(lighthouse_ships, new_win)
-                    end
-                end)
-            end
-
-            vim.schedule(function() self.harbor.dock:show(index) end)
+            -- SHOW SHIP
             vim.schedule(function()
-                vim.api.nvim_rent_win(prompt_win)
+                self:input_execution(input)
             end)
         end,
         nil,
         function()
-            --print("ON CANCEL")
             vim.cmd("silent! source /tmp/" .. session_name)
         end
     )
+end
+
+function Lighthouse:handle_input_win(input)
+    if #self.lighthouse_ships == 0 then
+        vim.api.nvim_set_current_win(self.initial_win)
+        table.insert(self.lighthouse_ships, self.initial_win)
+    else
+        local is_horizontal = input == string.upper(input)
+        vim.api.nvim_set_current_win(self.lighthouse_ships[#self.lighthouse_ships])
+        vim.schedule(function()
+            vim.cmd(is_horizontal and "vert split" or "belowright split")
+        end)
+        vim.schedule(function()
+            vim.cmd("wincmd " .. (is_horizontal and "l" or "j"))
+        end)
+    end
+end
+
+function Lighthouse:input_execution(input)
+    if string.lower(input) == "h" then
+        self.harbor.bay:show(1)
+    else
+        -- OPEN ONE OF dock
+        local index = get_index(MAP, string.lower(input))
+        if self.harbor.dock:get(index) then
+            self.harbor.dock:show(index)
+        end
+    end
+
+    -- back to prompt
+    vim.schedule(function() self:focus_input() end)
 end
 
 function Lighthouse:new(harbor)

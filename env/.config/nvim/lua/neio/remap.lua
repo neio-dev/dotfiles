@@ -1,20 +1,21 @@
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>b", vim.cmd.NvimTreeToggle)
-vim.keymap.set("n", "<leader><tab>", [[<C-^>]] )
-vim.keymap.set('t','<Esc>', [[<C-\><C-n>]])
+vim.keymap.set("n", "<leader><tab>", [[<C-^>]])
+vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
+vim.keymap.set('n', '<leader>w', "<cmd>w<cr><esc>")
 
 -- Fzf remap
 local fzf = require("fzf-lua")
-vim.keymap.set('n', '<leader>ff', function()
+vim.keymap.set('n', '<leader>f', function()
     return fzf.files({ cmd = "find -type f -not -path '*/node_modules/*' -printf '%P\n'" })
 end)
 
 -- Telescope remap
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<C-p>', builtin.git_files)
-vim.keymap.set('n', '<leader>fg', builtin.live_grep)
-vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols)
-vim.keymap.set('n', '<leader>fS', builtin.lsp_workspace_symbols)
+vim.keymap.set('n', '<leader>g', builtin.live_grep)
+vim.keymap.set('n', '<leader>s', builtin.lsp_document_symbols)
+vim.keymap.set('n', '<leader>S', builtin.lsp_workspace_symbols)
 
 -- Harpoon remap
 -- local mark = require("harpoon.mark")
@@ -30,4 +31,3 @@ vim.keymap.set('n', '<leader>fS', builtin.lsp_workspace_symbols)
 -- Undotree remap
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 -- Multiline remap
-

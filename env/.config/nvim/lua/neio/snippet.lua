@@ -24,5 +24,5 @@ function _G.record_snippet_to_register(register)
     
 end
 
-vim.api.nvim_set_keymap('n', '<leader>s', ':lua record_dynamic_snippet(vim.fn.input())<CR>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<leader>s', ':lua record_dynamic_snippet(vim.fn.input())<CR>', { noremap = true, silent = true })
 

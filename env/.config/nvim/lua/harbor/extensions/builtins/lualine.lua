@@ -20,17 +20,9 @@ local function get_active_highlight(invert)
     }
 
     local hl_group = "lualine_a_" .. (mode_map[mode] or "normal")
+    local prev_hl = vim.api.nvim_get_hl(0, { name = hl_group })
     local bg = vim.api.nvim_get_hl(0, { name = hl_group }).bg
     local fg = vim.api.nvim_get_hl(0, { name = hl_group }).fg
-    vim.api.nvim_set_hl(0, hl_name, {
-        fg = invert and bg or fg,
-        bg = invert and fg or bg,
-        bold = true,
-        standout = true,
-        underdotted = true,
-        special = "",
-    })
-
     return { hl_name, hl_group }
 end
 
@@ -76,14 +68,16 @@ local function pretty_name(ship, is_active, opt)
     -- name = get_git_status(ship) .. name
 
     if is_active then
-        name = "%#" .. hl[opt.invert and 2 or 1] .. "#[  " .. name .. "]%#" .. hl[opt.invert and 1 or 2] .. "#"
+        name = "%#" .. hl[opt.invert and 1 or 2] .. "#[  " .. name .. "]%#" .. hl[opt.invert and 2 or 1] .. "#"
     end
 
     return name
 end
 
 local function get_fleet(name, fleet, opt)
-    local line = name .. " "
+    local hl = get_active_highlight(false)
+    local line = "%#" .. hl[1] .. "#" .. name .. "%#" .. hl[2] .. "# "
+
     opt = opt or {}
     local curr_buf = buffer:get_current()
     local invert = opt.invert == nil and false or opt.invert
@@ -99,16 +93,17 @@ local function get_fleet(name, fleet, opt)
         line = line .. pretty_name(ship, is_active, opt) .. (index ~= #fleet and " | " or "")
     end
     return "%#" ..
-        get_active_highlight()[invert and 1 or 2] ..
-        "#" .. line .. "%#" .. get_active_highlight(false)[invert and 1 or 2] .. "#"
+        get_active_highlight()[invert and 2 or 1] ..
+        "#" .. line .. "%#" .. get_active_highlight(false)[invert and 2 or 1] .. "#"
 end
 
 function harbor_lualine:setup()
     local ext = function()
+        local hl = get_active_highlight(false)
         local harbor = require("harbor")
         local bay_fleet = get_fleet(": ", harbor.bay:get(), { invert = true })
-        local dock_fleet = get_fleet(": ", harbor.dock:get(), { show_index = true, invert = false })
-        return bay_fleet .. " ||| " .. dock_fleet
+        local dock_fleet = get_fleet(": ", harbor.dock:get(), { show_index = true, invert = true })
+        return bay_fleet .. " %#" .. hl[1] .. "# ||| %#" .. hl[2] .. "# " .. dock_fleet
     end
 
     return ext

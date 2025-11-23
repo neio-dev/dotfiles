@@ -11,6 +11,7 @@ local mappings = {
     kmap({n,o,x},"e","j","Down"),
     kmap({n,o,x},"i","k","Up"),
     kmap({n,o,x},"o","l","Right"),
+    kmap({n,o,x},"o","l","Right"),
 
     -- Beginning/end of line
     kmap({n,o,x},"L","^","Right"),
@@ -40,7 +41,7 @@ local mappings = {
     -- Text objects
     -- diw > drw, daw > dtw
     kmap({o,v},"r","i","desc"),
-    kmap({o,v},"t","a","desc"),
+    kmap({o,v},"p","a","desc"),
     -- MOve visual replace from 'r' to 'R'
     kmap({v},"R","r","Visual replace"),
 
