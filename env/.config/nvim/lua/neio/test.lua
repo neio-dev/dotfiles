@@ -1,1 +1,25 @@
-vim.keymap.set('n', '<leader>mq', 'qsnipq', { noremap = false })
+local pickers = require "telescope.pickers"
+local finders = require "telescope.finders"
+local actions = require "telescope.actions"
+local actions_state = require "telescope.actions.state"
+local config = require("telescope.config").values
+
+local colors = function(opts)
+    opts = opts or {}
+    pickers.new(opts, {
+        prompt_title = "Harbor Sessions",
+        finder = finders.new_table {
+            results = { "Default", "Harbor", "Alter" }
+        },
+        sorter = config.generic_sorter(opts),
+        attach_mappings = function(prompt_bufnr, map)
+            actions.select_default:replace(function()
+                actions.close(prompt_bufnr)
+                local selection = actions_state.get_selected_entry()
+                vim.api.nvim_put({ selection[1] }, "", false, true)
+            end)
+            return true
+        end,
+    }):find()
+end
+

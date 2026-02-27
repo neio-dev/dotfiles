@@ -13,25 +13,37 @@ return {
                 height = '45%',
             },
             on_vim_enter = function(event)
-               vim.keymap.set('n','<leader>tt', function()
+                vim.keymap.set({ 'n' }, '<leader>t', function()
                     event.instance.focus_or_toggle()
-                end) 
-                vim.keymap.set('n', '<leader>tf', function()
-                    event.instance.toggle_zoom()
-               end)
-                vim.keymap.set('n', '<leader>tc', function()
-                    event.instance.open({ mode = 'new' })
                 end)
-                vim.keymap.set('n', '<leader>to', function()
-                    event.instance.go(1)
-                end)
-                vim.keymap.set('n', '<leader>tn', function()
-                    event.instance.go(-1)
-                end)
-           end,
+                --               vim.keymap.set('n', '<leader>tf', function()
+                --                   event.instance.toggle_zoom()
+                --              end)
+                --               vim.keymap.set('n', '<leader>tc', function()
+                --                   event.instance.open({ mode = 'new' })
+                --               end)
+                --               vim.keymap.set('n', '<leader>to', function()
+                --                   event.instance.go(1)
+                --               end)
+                --                vim.keymap.set('n', '<leader>tn', function()
+                --                   event.instance.go(-1)
+                --              end)
+            end,
 
-            on_did_create_buffer = function()
+            on_did_create_buffer = function(event)
                 vim.fn.termopen(os.getenv('SHELL'))
+                vim.keymap.set("n", "<Esc>", function()
+                    event.instance.focus_or_toggle()
+                end, { buffer = event.bufnr })
+
+                vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+                    buffer = event.bufnr,
+                    callback = function()
+                        if vim.bo.buftype == "terminal" then
+                            vim.cmd("startinsert")
+                        end
+                    end,
+                })
             end,
 
             on_did_open_buffer = function()
@@ -59,19 +71,17 @@ return {
             end,
 
             on_vim_enter = function(event)
-               vim.keymap.set('n','<leader>nn', function()
+                vim.keymap.set('n', '<leader>nn', function()
                     event.instance.focus_or_toggle()
-                end) 
+                end)
                 vim.keymap.set('n', '<leader>nf', function()
                     event.instance.toggle_zoom()
                 end)
-           end,
+            end,
 
             on_did_create_buffer = function()
                 vim.cmd('edit NOTES.md')
             end,
         })
-
-
     end
 }

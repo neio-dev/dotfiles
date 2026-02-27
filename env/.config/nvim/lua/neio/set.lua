@@ -1,18 +1,30 @@
-vim.opt.guicursor = "i:blinkon100"
+-- vim.opt.guicursor = "i:blinkon100"
 vim.api.nvim_set_hl(0, "LualineBufferHighlight", {
   underline = true,
   bold = true,
   -- leave `fg` and `bg` unset so they inherit from parent
 })
+vim.lsp.set_log_level("debug")
+vim.api.nvim_create_autocmd("ColorSchemePre", {
+    callback = function()
+        vim.cmd("highlight clear")
+        if vim.fn.exists("syntax_on") then
+            vim.cmd("syntax reset")
+        end
+    end
+})
+-- vim.opt.fillchars = 'eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:'
 vim.opt.nu = true
 vim.opt.relativenumber = true
-
+vim.opt.splitkeep = "screen"
 vim.opt.tabstop = 4
+vim.opt.scrolloff = 8
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
 vim.opt.smartindent = true
+vim.opt.autoindent = true
 
 vim.opt.wrap = false
 vim.opt.swapfile = false

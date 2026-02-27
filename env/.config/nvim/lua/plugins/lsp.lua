@@ -5,21 +5,77 @@ local function lsp_add(ls, config)
 end
 
 local function enable_lsps()
+    lsp_add("docker-language-server", {
+        cmd = { 'docker-language-server', 'start', '--stdio' },
+        filetypes = { 'dockerfile', 'yaml.docker-compose' },
+        get_language_id = function(_, ftype)
+            if ftype == 'yaml.docker-compose' or ftype:lower():find('ya?ml') then
+                return 'dockercompose'
+            else
+                return ftype
+            end
+        end,
+        root_markers = {
+            'Dockerfile',
+            'docker-compose.yaml',
+            'docker-compose.yml',
+            'compose.yaml',
+            'compose.yml',
+            'docker-bake.json',
+            'docker-bake.hcl',
+            'docker-bake.override.json',
+            'docker-bake.override.hcl',
+        },
+        filetypes = { "dockerfile", "yaml", "yaml.docker-compose" }
+    })
     lsp_add("lua_ls", {
         settings = {
             Lua = {
+                semantic = { enable = true },
+                hint = { enable = true },
                 runtime = {
                     version = "LuaJIT",
                     path = vim.split(package.path, ";"),
                 },
+                root_markers = { { ".luarc.json", ".luarc.jsonc" }, ".git" },
                 workspace = {
                     library = {
                         vim.api.nvim_get_runtime_file("", true),
+                        vim.fn.expand "${3rd}/love2d/library",
+                        vim.fn.expand "${3rd}/busted/library",
+                        "/usr/local/share/lua/5.4/busted",
+                        "/usr/local/lib/luarocks/rocks-5.4/busted/2.3.0-1/lua",
                     },
-                    checkThirdParty = false,
+                    checkThirdParty = true,
+                    semanticTokens = { enable = true },
+                },
+                runtime = {
+                    version = "LuaJIT", -- or "Lua 5.4" / "Lua 5.5"
+                    path = {
+                        "?.lua",
+                        "?/init.lua"
+                    }
+                },
+                workspace = {
+                    library = {
+                        "/usr/local/share/lua/5.4", -- path where LuaRocks installs Lua files
+                        "/usr/local/lib/lua/5.4",    -- compiled rocks (.so/.dll)
+                        "/usr/local/share/lua/5.4/busted",
+                        "/usr/local/lib/luarocks/rocks-5.4/busted/2.3.0-1/lua",
+                        vim.fn.expand "${3rd}/busted/library",
+                    }
                 },
                 diagnostics = {
-                    globals = { "vim" }
+                    globals = {
+                        "vim",
+                        "love",
+                        "describe",
+                        "it",
+                        "before_each",
+                        "after_each",
+                        "assert",
+                        "setup",
+                    }
                 }
             }
         }
@@ -27,9 +83,138 @@ local function enable_lsps()
 
     lsp_add("mdx_analyzer")
     lsp_add("pyright")
+    local customizations = {
+        { rule = 'style/*',   severity = 'off', fixable = true },
+        { rule = 'format/*',  severity = 'off', fixable = true },
+        { rule = '*-indent',  severity = 'off', fixable = true },
+        { rule = '*-spacing', severity = 'off', fixable = true },
+        { rule = '*-spaces',  severity = 'off', fixable = true },
+        { rule = '*-order',   severity = 'off', fixable = true },
+        { rule = '*-dangle',  severity = 'off', fixable = true },
+        { rule = '*-newline', severity = 'off', fixable = true },
+        { rule = '*quotes',   severity = 'off', fixable = true },
+        { rule = '*semi',     severity = 'off', fixable = true },
+    }
+    lsp_add("eslint", {
+        filetypes = {
+            "javascript",
+            "javascriptreact",
+            "javascript.jsx",
+            "typescript",
+            "typescriptreact",
+            "typescript.tsx",
+            "vue",
+            "html",
+            "markdown",
+            "json",
+            "jsonc",
+            "yaml",
+            "toml",
+            "xml",
+            "gql",
+            "graphql",
+            "astro",
+            "svelte",
+            "css",
+            "less",
+            "scss",
+            "pcss",
+            "postcss"
+        },
+        settings = {
+            -- Silent the stylistic rules in your IDE, but still auto fix them
+            rulesCustomizations = customizations,
+        },
+    })
+    lsp_add("qmk-lsp", {
+        cmd = { "qmk-lsp" },
+        filetypes = { "c" },
+    })
     lsp_add("html")
     lsp_add("jsonls")
     lsp_add("cssls")
+    lsp_add("phpactor")
+    lsp_add("intelephense", {
+        settings = {
+            intelephense = {
+                stubs = {
+                    "apache",
+                    "bcmath",
+                    "bz2",
+                    "calendar",
+                    "com_dotnet",
+                    "Core",
+                    "ctype",
+                    "curl",
+                    "date",
+                    "dba",
+                    "dom",
+                    "enchant",
+                    "exif",
+                    "FFI",
+                    "fileinfo",
+                    "filter",
+                    "fpm",
+                    "ftp",
+                    "gd",
+                    "gettext",
+                    "gmp",
+                    "hash",
+                    "iconv",
+                    "imap",
+                    "intl",
+                    "json",
+                    "ldap",
+                    "libxml",
+                    "mbstring",
+                    "meta",
+                    "mysqli",
+                    "oci8",
+                    "odbc",
+                    "openssl",
+                    "pcntl",
+                    "pcre",
+                    "PDO",
+                    "pdo_ibm",
+                    "pdo_mysql",
+                    "pdo_pgsql",
+                    "pdo_sqlite",
+                    "pgsql",
+                    "Phar",
+                    "posix",
+                    "pspell",
+                    "readline",
+                    "Reflection",
+                    "session",
+                    "shmop",
+                    "SimpleXML",
+                    "snmp",
+                    "soap",
+                    "sockets",
+                    "sodium",
+                    "SPL",
+                    "sqlite3",
+                    "standard",
+                    "superglobals",
+                    "sysvmsg",
+                    "sysvsem",
+                    "sysvshm",
+                    "tidy",
+                    "tokenizer",
+                    "xml",
+                    "xmlreader",
+                    "xmlrpc",
+                    "xmlwriter",
+                    "xsl",
+                    "Zend OPcache",
+                    "zip",
+                    "zlib",
+                    "wordpress"
+                }
+            }
+        }
+
+    })
     lsp_add("ts_ls", {
         filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
     })
@@ -72,7 +257,6 @@ return { {
             lspconfig_defaults.capabilities,
             require('cmp_nvim_lsp').default_capabilities()
         )
-
         vim.api.nvim_create_autocmd('LspAttach', {
             desc = 'LSP actions',
             callback = function(event)
@@ -93,15 +277,19 @@ return { {
         })
         enable_lsps()
         local cmp = require('cmp')
+        local luasnip = require('luasnip')
 
         cmp.setup({
             sources = {
                 { name = 'nvim_lsp' },
+                { name = 'luasnip' },
+                { name = 'buffer' },
+                { name = 'path' },
             },
             snippet = {
                 expand = function(args)
                     -- You need Neovim v0.10 to use vim.snippet
-                    vim.snippet.expand(args.body)
+                    luasnip.lsp_expand(args.body)
                 end,
             },
             mapping = cmp.mapping.preset.insert({
@@ -110,7 +298,15 @@ return { {
                 ["<Up>"] = cmp.config.disable,
                 ["<Down>"] = cmp.config.disable,
                 ["<C-Space>"] = cmp.mapping.complete(),
-                ["<Tab>"] = cmp.mapping.confirm({ select = true }),
+                ["<Tab>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.confirm({ select = true })
+                    elseif luasnip.expand_or_jumpable() then
+                        luasnip.expand_or_jump()
+                    else
+                        fallback()
+                    end
+                end, { "i", "s" }),
                 ["<CR>"] = cmp.config.disable,
                 ["<S-Tab>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
@@ -129,7 +325,25 @@ return { {
 
             }),
         })
-    end
+        local types = require("cmp.types")
+
+        local function deprioritize_snippet(entry1, entry2)
+            if entry1:get_kind() == types.lsp.CompletionItemKind.Snippet then
+                return false
+            end
+            if entry2:get_kind() == types.lsp.CompletionItemKind.Snippet then
+                return true
+            end
+        end
+
+        table.insert(cmp.get_config().sorting.comparators, 1, deprioritize_snippet)
+    end,
+    on_attach = function(client, bufnr)
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            command = "LspEslintFixAll",
+        })
+    end,
 },
     {
         'hrsh7th/cmp-nvim-lsp',

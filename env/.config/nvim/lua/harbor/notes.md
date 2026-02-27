@@ -22,6 +22,7 @@
 - [-] [telescope] add telescope extension
 - [x] cycle first position for "append"
 - [x] if cycle not current list, select list, else cycle
+- [x] restructure project 
 - [ ] pin panel - eg pin a buffer into a sidepanel independant of current buffer switching, can focus panel, close it, remove it
 ---
 
@@ -29,10 +30,10 @@
 ---
 - [x] cycle goes back to first index after 2nd index
 - [x] error when no file present on first load for current pwd (just check if file before loading)
-- [ ] [SPLIT] when opening a new file it opens the file in bay section and normal
+- [x] [SPLIT] when opening a new file it opens the file in bay section and normal
 - [x] when moving from bay to dock, bay entry stays
 - [x] in prepend should always prepend on set
 - [x] fix empty name on load
-- [ ] fix cycle when empty in middle
+- [x] fix cycle when empty in middle
 ---
 

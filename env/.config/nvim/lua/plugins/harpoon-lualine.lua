@@ -1,3 +1,0 @@
-return {
-    "letieu/harpoon-lualine",
-}

@@ -23,6 +23,16 @@ utils.print_time = function (seconds)
     return hh..":"..mm..":"..ss
 end
 
+utils.T = function (base, ...)
+    local output = {}
+
+    for _, part in ipairs({...}) do
+        output[#output + 1] = "%#" .. (part[2] or base) .. "#" .. part[1] .. "%#" .. base .. "#"
+    end
+
+
+    return table.concat(output, "")
+end
 
 utils.set_interval = function (interval, callback)
     local timer = vim.uv.new_timer()
