@@ -1,0 +1,3 @@
+[submodule "env/.config/nvim/lua/harbor"]
+	path = env/.config/nvim/lua/harbor
+	url = https://github.com/neio-dev/harbor.nvim
