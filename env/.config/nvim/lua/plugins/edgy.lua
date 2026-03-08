@@ -3,7 +3,7 @@ return {
     event = "VeryLazy",
     init = function()
         vim.opt.laststatus = 3
-        vim.opt.splitkeep = "screen"
+        vim.opt.splitkeep = "topline"
     end,
     opts = {
         animate = { enabled = false },
@@ -13,6 +13,7 @@ return {
                 ft = "NvimTree",
                 size = { height = 0.5 },
                 pinned = true,
+                open = "NvimTreeOpen"
             },
             {
                 title = "Symbols",

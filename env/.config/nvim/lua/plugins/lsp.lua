@@ -5,6 +5,7 @@ local function lsp_add(ls, config)
 end
 
 local function enable_lsps()
+    lsp_add("clangd")
     lsp_add("docker-language-server", {
         cmd = { 'docker-language-server', 'start', '--stdio' },
         filetypes = { 'dockerfile', 'yaml.docker-compose' },

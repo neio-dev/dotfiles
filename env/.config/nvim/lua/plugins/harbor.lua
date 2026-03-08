@@ -13,7 +13,7 @@ return {
             }
         })
 
-        harbor.emitter:on("FLEET_ADD", function(data) print(data.fleet.name, data.ship, " was added") end)
+        harbor.emitter.on("FLEET_ADD", function(data) print(data.fleet.name, data.ship, " was added") end)
 
         harbor:set_default_keybinds()
     end,
