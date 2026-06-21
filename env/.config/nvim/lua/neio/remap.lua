@@ -1,5 +1,6 @@
 vim.g.mapleader = " "
-vim.keymap.set("n", "<leader>b", vim.cmd.NvimTreeFocus)
+vim.keymap.set("n", "<leader>b", vim.cmd.Neotree)
+vim.keymap.set("n", "<leader><leader>b", function() vim.cmd("Neotree close") end)
 vim.keymap.set("n", "<leader><tab>", [[<C-^>]])
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
 vim.keymap.set('n', '<leader>w', "<cmd>w<cr><esc>")
@@ -14,32 +15,37 @@ vim.keymap.set('n', '<leader>j', function()
 end)
 
 -- Fzf remap
-local fzf = require("fzf-lua")
-vim.keymap.set('n', '<leader>f', function()
-    return fzf.files({
-        cmd = "fd . --type f --hidden --exclude node_modules --exclude vendor --exclude .git"
-    })
-end)
+local fzf_loaded, fzf = pcall(require, "fzf-lua")
+if fzf_loaded then
+    vim.keymap.set('n', '<leader>f', function()
+        return fzf.files({
+            cmd = "fd . --type f --hidden --exclude node_modules --exclude vendor --exclude .git"
+        })
+    end)
+end
 
-vim.keymap.set({ "n", "t" }, "<C-r>",
-    function()
-        local result = vim.treesitter.get_captures_at_cursor(0)
-        print(vim.inspect(result))
-    end,
-    { noremap = true, silent = false }
-)
+--vim.keymap.set({ "n", "t" }, "<C-r>",
+--    function()
+--        local result = vim.treesitter.get_captures_at_cursor(0)
+--        print(vim.inspect(result))
+--    end,
+--    { noremap = true, silent = false }
+--)
 
 -- Telescope remap
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<C-p>', builtin.git_files)
-vim.keymap.set('n', '<leader>g', builtin.live_grep)
-vim.keymap.set('n', '<leader>s', "<cmd>Outline<CR>")
-vim.keymap.set('n', '<leader>S', builtin.lsp_workspace_symbols)
+local builtin_loaded, builtin = pcall(require, 'telescope.builtin')
+if builtin_loaded then
+    vim.keymap.set('n', '<C-p>', builtin.git_files)
+    vim.keymap.set('n', '<leader>g', builtin.live_grep)
+    vim.keymap.set('n', '<leader>s', "<cmd>Outline<CR>")
+    vim.keymap.set('n', '<leader>S', builtin.lsp_workspace_symbols)
+end
 
 -- zen mode
-local zen = require("zen-mode")
-vim.keymap.set('n', '<leader>z', zen.toggle)
-
+local zen_loaded, zen = pcall(require, "zen-mode")
+if zen_loaded then
+    vim.keymap.set('n', '<leader>z', zen.toggle)
+end
 -- Harpoon remap
 -- local mark = require("harpoon.mark")
 -- local ui = require("harpoon.ui")

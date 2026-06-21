@@ -1,10 +1,11 @@
 -- vim.opt.guicursor = "i:blinkon100"
 vim.api.nvim_set_hl(0, "LualineBufferHighlight", {
-  underline = true,
-  bold = true,
-  -- leave `fg` and `bg` unset so they inherit from parent
+    underline = true,
+    bold = true,
+    -- leave `fg` and `bg` unset so they inherit from parent
 })
 vim.lsp.set_log_level("debug")
+--[[
 vim.api.nvim_create_autocmd("ColorSchemePre", {
     callback = function()
         vim.cmd("highlight clear")
@@ -13,6 +14,7 @@ vim.api.nvim_create_autocmd("ColorSchemePre", {
         end
     end
 })
+--]]
 -- vim.opt.fillchars = 'eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:'
 vim.opt.nu = true
 vim.opt.relativenumber = true
@@ -25,7 +27,7 @@ vim.opt.expandtab = true
 
 vim.opt.smartindent = true
 vim.opt.autoindent = true
-
+vim.opt.laststatus = 3
 vim.opt.wrap = false
 vim.opt.swapfile = false
 vim.opt.backup = false
@@ -48,12 +50,35 @@ vim.filetype.add({
     }
 })
 
+local horiz = "─"
+local fillchars = {
+    vert      = " ",
+    horiz     = " ",
+
+    vertleft  = " ",
+    vertright = " ",
+    verthoriz = " ",
+
+    horizup   = " ",
+    horizdown = " ",
+
+    foldopen  = "",
+    foldclose = "",
+    foldsep   = "|",
+
+    diff      = "╱",
+
+    eob       = " ",
+}
+
+vim.opt.fillchars:append(fillchars)
+
 function _G.ReloadConfig()
-  for name,_ in pairs(package.loaded) do
-    if name:match("^user") or name:match("^plugins") then -- or your config folder prefix
-      package.loaded[name] = nil
+    for name, _ in pairs(package.loaded) do
+        if name:match("^user") or name:match("^plugins") then -- or your config folder prefix
+            package.loaded[name] = nil
+        end
     end
-  end
-  dofile(vim.env.MYVIMRC)
-  vim.notify("Config reloaded!", vim.log.levels.INFO)
+    dofile(vim.env.MYVIMRC)
+    vim.notify("Config reloaded!", vim.log.levels.INFO)
 end

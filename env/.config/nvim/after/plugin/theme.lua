@@ -1,3 +1,5 @@
+local theme = "lume"
+
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = vim.api.nvim_create_augroup('highlight_on_yank', { clear = true }),
     callback = function()
@@ -9,12 +11,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     end
 })
 
-vim.o.background = "dark"
 
 --pcall(vim.cmd, "colorscheme github_dark_default")
 --pcall(vim.cmd, "colorscheme neo64")
 -- pcall(vim.cmd, "colorscheme catppuccin-intellijdark")
-pcall(vim.cmd, "colorscheme eldritch")
+-- vim.cmd "colorscheme catppuccin-latte"
+-- vim.o.background = "dark"
+vim.cmd("colorscheme " .. theme)
 -- Noirbuddy
 --local Group = require("colorbuddy").Group
 --local colors = require("colorbuddy").colors

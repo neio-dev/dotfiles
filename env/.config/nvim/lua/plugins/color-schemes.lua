@@ -1,15 +1,46 @@
 local common_opts = {
-    transparent = false,
-    styles = {
-        sidebars = "transparent",
-        floats = "transparent",
-    }
+    italic_comments = true,
 }
 
 return {
     {
+        "everviolet/nvim",
+        name = "evergarden",
+        opts = {
+            theme = { variant = 'fall', accent = 'green' }
+        }
+    },
+    { "e-q/okcolors.nvim",            opts = common_opts },
+    { "yorickpeterse/nvim-grey",      opts = common_opts },
+    { "fynnfluegge/monet.nvim",       opts = common_opts },
+    { "ronisbr/nano-theme.nvim",      opts = common_opts },
+    { "pineapplegiant/spaceduck",     opts = common_opts },
+    { "diegoulloao/neofusion.nvim",   opts = common_opts },
+    { "e-ink-colorscheme/e-ink.nvim", opts = common_opts },
+    { "uloco/bluloco.nvim",           opts = common_opts },
+    { "kungfusheep/mfd.nvim" },
+    { "oskarnurm/koda.nvim" },
+    { "savq/melange-nvim",            opts = common_opts, config = function() end },
+    { "danfry1/lume" },
+    {
+        'mistweaverco/retro-theme.nvim',
+        opts = {
+            italic_comments = true,
+        },
+    },
+    {
         "folke/tokyonight.nvim",
         opts = common_opts,
+        config = function()
+            require("tokyonight").setup {
+                style = "night",
+                styles = {
+                    sidebars = "dark",
+                    floats = "dark",
+                },
+                sidebars = { "qf", "terminal", "neo-tree", "NvimTree", "help" }
+            }
+        end,
     },
     { "eldritch-theme/eldritch.nvim" },
     {

@@ -10,10 +10,13 @@ return {
         right = {
             {
                 title = "Explorer",
-                ft = "NvimTree",
-                size = { height = 0.5 },
+                ft = "neo-tree",
+                filter = function(buf)
+                    return vim.b[buf].neo_tree_source == "filesystem"
+                end,
+                size = { width = 0.25 },
                 pinned = true,
-                open = "NvimTreeOpen"
+                open = "Neotree position=right filesystem",
             },
             {
                 title = "Symbols",

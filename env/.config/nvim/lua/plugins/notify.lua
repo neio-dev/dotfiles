@@ -18,12 +18,12 @@ return {
     config = function()
         local notify = require("notify")
         notify.setup({
-            background_colour = "#000000"
+            timeout = 2000,
         })
         vim.notify = require("notify")
     end,
     opts = {
         render = "compact",
-        background_colour = "#000000"
+        timeout = 2000,
     }
 }

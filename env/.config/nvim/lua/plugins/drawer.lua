@@ -78,9 +78,18 @@ return {
                     event.instance.toggle_zoom()
                 end)
             end,
-
-            on_did_create_buffer = function()
+            on_did_create_buffer = function(event)
                 vim.cmd('edit NOTES.md')
+                vim.keymap.set("n", "<Esc>", function()
+                    event.instance.focus_or_toggle()
+                end, { buffer = event.bufnr })
+
+                vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+                    buffer = event.bufnr,
+                    callback = function()
+                        vim.cmd("startinsert")
+                    end,
+                })
             end,
         })
     end

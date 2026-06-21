@@ -109,10 +109,10 @@ local mappings = {
     kmap({ n, x }, "gh", "K", ""),
 
     -- Window nav
-    kmap({ n }, "<leader><leader>n", "<C-w>h", ""),
-    kmap({ n }, "<leader><leader>e", "<C-w>j", ""),
-    kmap({ n }, "<leader><leader>i", "<C-w>k", ""),
-    kmap({ n }, "<leader><leader>o", "<C-w>l", ""),
+    -- kmap({ n }, "<leader><leader>n", "<C-w>h", ""),
+    -- kmap({ n }, "<leader><leader>e", "<C-w>j", ""),
+    -- kmap({ n }, "<leader><leader>i", "<C-w>k", ""),
+    -- kmap({ n }, "<leader><leader>o", "<C-w>l", ""),
     kmap({ n }, "<leader><leader>N", "<C-w>H", ""),
     kmap({ n }, "<leader><leader>E", "<C-w>J", ""),
     kmap({ n }, "<leader><leader>I", "<C-w>K", ""),
