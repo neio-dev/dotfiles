@@ -19,6 +19,16 @@ vim.api.nvim_create_user_command("AddMissingImports", function()
     })
 end, { desc = "Add missing imports via LSP" })
 
+vim.api.nvim_create_augroup("EslintFix", { clear = true })
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = "EslintFix",
+  pattern = { "*.js", "*.jsx", "*.ts", "*.tsx" },
+  callback = function()
+    vim.cmd("LspEslintFixAll")
+  end,
+})
+
 function _G.ReloadModule(name)
     package.loaded[name] = nil
     return require(name)

@@ -6,7 +6,7 @@ return {
             block = '<leader>?',
         },
         opleader = {
-            block = '<leader>',
+            block = '<leader>/',
         },
     },
 }
